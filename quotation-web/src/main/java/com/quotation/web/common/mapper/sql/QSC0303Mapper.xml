@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.quotation.web.common.service.QSC0303Service">
+    <select id="getInformationList" parameterType="com.quotation.core.bean.BaseParam"
+            resultType="com.quotation.web.common.entity.QSC0303Entity">
+        select	A.INFORMATION_ID as informationId,
+        A.TITLE as title,
+        A.INFORMATION as information,
+        B.USER_NAME as userName,
+        A.UPDATED_DATE as updatedDate
+        from	QUOTATION.TNM_INFORMATION	A,
+            QUOTATION.TNM_USER B
+        where <![CDATA[ A.DISPLAY_START_DATE <= current date
+        and	 A.DISPLAY_END_DATE >= current date ]]>
+        and A.UPDATED_BY = B.USER_ID
+        order by A.UPDATED_DATE DESC
+    </select>
+</mapper>

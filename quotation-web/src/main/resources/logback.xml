@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 自动检测配置文件是否改动，间隔从默认1分钟改为5分钟 -->
+<configuration scan="true" scanPeriod="300 seconds">
+    <property name="BasePath" value="/quotationHome/logs/quotation-web"/>
+    <property name="BaseName" value="quotation-web"/>
+
+    <!-- 上下文名称，一旦设置，不能修改 -->
+    <contextName>quotation-web</contextName>
+
+    <!-- 将信息打印到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy/MM/dd HH:mm:ss.SSS}][%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 将日志打印到文件 -->
+    <appender name="DEFAULT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${BasePath}/${BaseName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${BasePath}/${BaseName}.%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy/MM/dd HH:mm:ss.SSS}][%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <append>false</append>
+        <prudent>false</prudent>
+    </appender>
+
+    <appender name="rollingAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${BasePath}/${BaseName}-service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${BasePath}/${BaseName}-service.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy/MM/dd HH:mm:ss.SSS}][%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <append>false</append>
+        <prudent>false</prudent>
+    </appender>
+
+    <logger name="com.quotation.common.*" level="INFO" additivity="true">
+        <appender-ref ref="rollingAppender"/>
+    </logger>
+    <logger name="com.quotation.core.*" level="INFO" additivity="true">
+        <appender-ref ref="rollingAppender"/>
+    </logger>
+
+    <!-- 日志根节点 -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -1,0 +1,132 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quotation.web.core.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.quotation.web.core.entity.User">
+        <result column="USER_ID" property="userId"/>
+        <result column="LOGIN_ID" property="loginId"/>
+        <result column="USER_NAME" property="username"/>
+        <result column="PWD" property="pwd"/>
+        <result column="MAIL_ADDR" property="mailAddr"/>
+        <result column="COMPANY_CODE" property="companyCode"/>
+        <result column="STATUS" property="status"/>
+        <result column="MISS_COUNT" property="missCount"/>
+        <result column="LAST_NG_TIME" property="lastNgTime"/>
+        <result column="EXPIRY_DATE" property="expiryDate"/>
+        <result column="LAST_LOGIN_TIME" property="lastLoginTime"/>
+        <result column="DEFAULT_OFFICE" property="defaultOffice"/>
+        <result column="DEFAULT_SECTION" property="defaultSection"/>
+        <result column="CREATED_BY" property="createdBy"/>
+        <result column="CREATED_DATE" property="createdDate"/>
+        <result column="UPDATED_BY" property="updatedBy"/>
+        <result column="UPDATED_DATE" property="updatedDate"/>
+        <result column="VERSION" property="version"/>
+    </resultMap>
+
+    <resultMap id="roleInfoMap" type="com.quotation.web.core.bean.RoleInfo">
+        <result column="ROLE_ID" property="roleId"/>
+        <result column="ROLE_NAME" property="roleName"/>
+        <result column="ROLE_NOTES" property="roleNotes"/>
+        <result column="STATUS" property="status"/>
+        <result column="OFFICE_CODE" property="officeCode"/>
+        <result column="SECTION_CODE" property="sectionCode"/>
+        <collection property="resourceCodes" ofType="string" javaType="list">
+            <result column="RESOURCE_CODE"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="accessResourceMap" type="com.quotation.web.core.entity.AccessResource">
+        <id column="RESOURCE_CODE" property="resourceCode"/>
+        <result column="RESOURCE_DESC_KEY" property="resourceDescKey"/>
+        <result column="AR_TYPE" property="type"/>
+        <result column="AR_TITLE_KEY" property="titleKey"/>
+        <result column="AR_MENU_URL" property="menuUrl"/>
+        <result column="AR_MENU_INDEX" property="menuIndex"/>
+        <result column="AR_MENU_LEVEL" property="menuLevel"/>
+        <result column="AR_MENU_TARGET" property="menuTarget"/>
+    </resultMap>
+
+    <select id="findByLoginId" parameterType="string" resultMap="userResultMap">
+        SELECT
+            USER_ID,
+            LOGIN_ID,
+            USER_NAME,
+            PWD,
+            MAIL_ADDR,
+            COMPANY_CODE,
+            STATUS,
+            MISS_COUNT,
+            LAST_NG_TIME,
+            EXPIRY_DATE,
+            LAST_LOGIN_TIME,
+            DEFAULT_OFFICE,
+            DEFAULT_SECTION,
+            CREATED_BY,
+            CREATED_DATE,
+            UPDATED_BY,
+            UPDATED_DATE,
+            VERSION
+        FROM QUOTATION.TNM_USER
+        WHERE LOGIN_ID = #{loginId}
+    </select>
+
+    <select id="findRoleByLoginId" parameterType="string" resultMap="roleInfoMap">
+        SELECT
+            r.ROLE_ID,
+            r.ROLE_NAME,
+            r.ROLE_NOTES,
+            r.STATUS,
+            ru.OFFICE_CODE,
+            ru.SECTION_CODE,
+            rr.RESOURCE_CODE
+        FROM QUOTATION.TNM_ROLE_USER ru
+            LEFT JOIN QUOTATION.TNM_ROLE r
+                ON ru.ROLE_ID = r.ROLE_ID
+            LEFT JOIN QUOTATION.TNM_ROLE_RESOURCE rr
+                ON rr.ROLE_ID = r.ROLE_ID
+        WHERE ru.LOGIN_ID = #{loginId}
+    </select>
+    <select id="findRole" resultMap="roleInfoMap">
+        SELECT
+            r.ROLE_ID,
+            r.ROLE_NAME,
+            r.ROLE_NOTES,
+            r.STATUS,
+            ru.OFFICE_CODE,
+            ru.SECTION_CODE,
+            rr.RESOURCE_CODE
+        FROM QUOTATION.TNM_ROLE_USER ru
+            LEFT JOIN QUOTATION.TNM_ROLE r
+                ON ru.ROLE_ID = r.ROLE_ID
+            LEFT JOIN QUOTATION.TNM_ROLE_RESOURCE rr
+                ON rr.ROLE_ID = r.ROLE_ID
+        WHERE ru.LOGIN_ID = #{loginId}
+              AND ru.OFFICE_CODE = #{officeCode}
+              AND ru.SECTION_CODE = #{sectionCode}
+    </select>
+
+    <select id="findAccessResource" parameterType="string" resultMap="accessResourceMap">
+        SELECT
+            ar.RESOURCE_CODE,
+            ar.RESOURCE_DESC_KEY,
+            ar.AR_TYPE,
+            ar.AR_TITLE_KEY,
+            ar.AR_MENU_URL,
+            ar.AR_MENU_INDEX,
+            ar.AR_MENU_LEVEL,
+            ar.AR_MENU_TARGET
+        FROM QUOTATION.TNM_ACCESS_RESOURCE ar
+        WHERE ar.RESOURCE_CODE IN (
+            SELECT rr.RESOURCE_CODE
+            FROM QUOTATION.TNM_ROLE_RESOURCE rr
+            WHERE rr.ROLE_ID IN (
+                SELECT ru.ROLE_ID
+                FROM QUOTATION.TNM_ROLE_USER ru
+                WHERE ru.LOGIN_ID = #{loginId}
+                      AND ru.OFFICE_CODE = #{officeCode}
+                      AND ru.SECTION_CODE = #{sectionCode}
+            )
+        )
+    </select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.quotation.web.common.service.QSC0301Service">
+    <sql id="whereSql">
+        <if test="filters.title != null">
+            AND A.TITLE LIKE '%'|| #{filters.title}||'%' ESCAPE '!'
+        </if>
+        <if test="filters.information != null">
+            AND A.INFORMATION LIKE '%'||#{filters.information}||'%' ESCAPE '!'
+        </if>
+        <if test="filters.dateFromStart != null">
+            <![CDATA[AND A.DISPLAY_START_DATE >= #{filters.dateFromStart}]]>
+        </if>
+        <if test="filters.dateFromEnd != null">
+            <![CDATA[AND A.DISPLAY_START_DATE <= #{filters.dateFromEnd}]]>
+        </if>
+        <if test="filters.dateToStart != null">
+            <![CDATA[AND A.DISPLAY_END_DATE >= #{filters.dateToStart}]]>
+        </if>
+        <if test="filters.dateToEnd != null">
+            <![CDATA[AND A.DISPLAY_END_DATE <= #{filters.dateToEnd}]]>
+        </if>
+    </sql>
+    <sql id="getInformationList">
+        SELECT A.INFORMATION_ID as informationId,
+                A.DISPLAY_START_DATE as dateFrom,
+                A.DISPLAY_END_DATE as dateTo,
+                A.TITLE,
+                A.INFORMATION,
+                ROWNUMBER() over(ORDER BY A.INFORMATION_ID) as rownum
+        FROM QUOTATION.TNM_INFORMATION A
+        WHERE 1=1
+        <include refid="whereSql"/>
+    </sql>
+    <select id="findPageListCount" parameterType="com.quotation.core.bean.PageParam"
+            resultType="int">
+        SELECT count(0) FROM (
+          <include refid="getInformationList"/>
+        )
+    </select>
+    <select id="findPageList" parameterType="com.quotation.core.bean.PageParam"
+            resultType="com.quotation.web.common.entity.QSC0301Entity">
+        SELECT * FROM (
+          <include refid="getInformationList"/>
+        ) WHERE 
+          <include refid="com.quotation.const.pagingCondition"/>
+    </select>
+
+    <delete id="deleteInformation" parameterType="com.quotation.core.bean.ObjectParam">
+        DELETE FROM QUOTATION.TNM_INFORMATION WHERE INFORMATION_ID IN
+        <foreach item="id" collection="datas" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

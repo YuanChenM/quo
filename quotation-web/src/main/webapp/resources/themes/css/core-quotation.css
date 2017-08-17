@@ -1,0 +1,68 @@
+@charset "utf-8";
+
+/* for quotation header */
+#header .syslogo {float:left; width:100px; height:60px; z-index:30;}
+#header .syslogo img {height:65px; width:90px; padding-top: 0px; padding-left: 5px;}
+#header .headerContent {z-index:30;}
+#header .buinfo {display:block; position:absolute; left:123px; height:19px; margin-top:6px; z-index:30;}
+#header .buinfo li { float:left; margin-left:-1px; padding:0 10px; line-height:12px; position:relative; z-index:30;}
+#header .buinfo li a { line-height:12px; z-index:30;}
+#header .buinfo ul li {height:12px; line-height:12px;padding:4px 10px; white-space:nowrap;}
+#header .buinfo .selected ul {display:block; position:absolute; z-index:31;}
+#header .toolbar {display:block; position:absolute; bottom:0px; left:90px; height:35px;}
+/*#header .toolbar .messagetool {width:100px; padding-left:40px;}
+#header .toolbar .alerttool {width:100px; padding-left:40px;}
+#header .toolbar .favoritetool {width:100px; padding-left:40px;}*/
+#header .toolbar a {width:200px; margin-right:50px; margin-left:30px;}
+#header .timeinfo {display:block; position:absolute; right:70px; height:19px; margin-top:6px; z-index:30;}
+#header .userinfo {display:block; position:absolute; top:33px; right:70px; height:28px; z-index:30;}
+#header .userinfo li { float:left; margin-left:-1px; padding:0 10px; line-height:12px; position:relative;}
+#header .userinfo li a { line-height:12px;}
+#header .userinfo ul li {height:12px; line-height:12px;padding:4px 10px; white-space:nowrap;}
+#header .userinfo .selected ul {display:block; z-index:31;}
+#header .ownerlogo {position:absolute; right:0; width:75px; height:60px; z-index:30;}
+#header .ownerlogo img {height:55px; width:68px; padding-top:3px; padding-left:5px;}
+
+/* for quotation tabsPage */
+.tabsPage .noshow { height:0px !important;}
+
+.tabsPage .tabsMoreDisabled { background-position:0 -400px; top:1px; right:0; cursor:default;}
+
+.tabsPageFooter { display:block; border-style:solid; border-width:1px; background-position:0 -450px; background-repeat:repeat-x; position:relative;}
+
+/* the split before message box in contain */
+#splitFooterBar { display:block; overflow:hidden; height:3px; position:relative; z-index:20;}
+
+/* the message box in contain */
+.menuContent { display:block; overflow:auto; border-style:solid; border-width:1px;}
+.tabsPageFooter .msgboxHeader { display:block; overflow:hidden; background-repeat:repeat-x; cursor:pointer;}
+.tabsPageFooter .msgboxHeader h2 { display:block; overflow:hidden; padding:0 25px 0 5px; height:25px; line-height:24px;}
+.tabsPageFooter .msgboxHeader h2 span { float:left; display:block; overflow:hidden; text-indent:-1000px; width:20px; height:25px;}
+.tabsPageFooter .msgboxContent { display:block; overflow:auto; background: none repeat scroll 0 0 #FFFFFF;}
+/*.tabsPageFooter .msgboxContent div, .tabsPageFooter .msgboxContent a, .tabsPageFooter .msgboxContent span { display:inherit; height:22px; line-height:22px;}*/
+
+.tabsPageFooter .msgboxHeader.hover { background-position:0 -25px;}
+.tabsPageFooter .msgboxHeader h2 { background-repeat:no-repeat; background-position:100% -50px;font-family: Arial,sans-serif;font-size: 12px;}
+.tabsPageFooter .msgboxHeader.hover h2 { background-position:100% -125px;}
+tr{height:20px}
+
+.buttonright { display:block; overflow:hidden; height:25px; padding-left:10px;padding-right:10px;margin-left:3px;margin-right: 3px; }
+.buttonright { float:right; display:block; overflow:hidden; height:25px;}
+.buttonright { background-position:0 0;}
+.buttonright { padding:0 5px 0 0; background-position:100% -50px;}
+.buttonright span { padding:0 10px 0 5px; background-position:100% -50px; cursor:hand;}
+.buttonright:hover { text-decoration:none; background-position:0 -100px;}
+.buttonright:hover span { background-position:100% -150px;}
+button, .buttonright span,
+.buttonright { cursor:hand;padding-left:10px;padding-right:10px;}
+.buttonright button { width:auto; height:25px; margin:0; padding:0 0 5px 0; border:0; font-size:12px; background:none; cursor:pointer;}
+.favoriteinfo li {height:15px; line-height:12px;padding:4px 10px; white-space:nowrap;}
+.favoriteinfo li a { line-height:22px;vertical-align:middle;padding-left:5px !important;margin-left: 0px !important;margin-right: 0px !important;}
+.favoriteinfo li img{vertical-align:middle;}
+
+.inputWithSearchButton { float:left; display:block; }
+.searchButton { float:left; display:block; overflow:hidden; text-indent:-1000px; width:16px; height:21px; background-position:0 -100px;}
+.searchButton:hover { background-position:0 -150px;}
+.orderdiv { padding: 3px 0 4px 0;}
+textarea {resize:none;}
+.bgg{background-color: #eee;border:1px solid #eee !important;}

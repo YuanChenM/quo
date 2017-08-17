@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SendEmailMapper.xml @screen common  -->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.quotation.common.service.SendEmailService">          
+    <select id="getMailSendFlag" parameterType="com.quotation.core.bean.BaseParam" resultType="com.quotation.common.entity.TnmMailConfig">
+        SELECT
+            MAIL_SNED_FLAG AS mailSendFlag
+        FROM
+            TNM_MAIL_CONFIG
+    </select>
+</mapper>

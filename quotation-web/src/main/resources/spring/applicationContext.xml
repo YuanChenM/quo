@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-4.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:component-scan base-package="com.quotation" use-default-filters="false">
+        <context:include-filter type="regex" expression="com.quotation.batch.*"/>
+        <context:include-filter type="regex" expression="com.quotation.*.service.*Service"/>
+        <context:include-filter type="regex" expression="com.quotation.*.*.service.*Service"/>
+        <context:include-filter type="regex" expression="com.quotation.core.base.BaseMybatisMapper"/>
+        <context:include-filter type="regex" expression="com.quotation.core.base.BaseHibernateDao"/>
+    </context:component-scan>
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/quotationDS"/>
+    </bean>
+
+    <beans:bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <beans:property name="dataSource" ref="dataSource"/>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.DB2Dialect
+                </beans:prop>
+                <beans:prop key="hibernate.format_sql">false</beans:prop>
+                <beans:prop key="hibernate.show_sql">false</beans:prop>
+                <beans:prop key="hibernate.use_sql_comments">false</beans:prop>
+                <beans:prop key="hibernate.max_fetch_depth">3</beans:prop>
+                <beans:prop key="hibernate.jdbc.batch_size">20</beans:prop>
+                <beans:prop key="hibernate.jdbc.fetch_size">20</beans:prop>
+                <beans:prop key="hibernate.cache.use_query_cache">false</beans:prop>
+                <beans:prop key="hibernate.cache.use_second_level_cache">false</beans:prop>
+                <beans:prop key="connection.autocommit">false</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <beans:property name="dataSource" ref="dataSource"/>
+        <beans:property name="configLocation" value="classpath:spring/mybatis-config.xml"/>
+        <beans:property name="mapperLocations" value="classpath*:com/quotation/**/mapper/sql/*Mapper.xml"/>
+    </beans:bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.quotation"/>
+    </bean>
+
+    <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <beans:property name="sessionFactory" ref="sessionFactory"/>
+    </beans:bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="do*" read-only="false" rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="create*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="modify*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="merge*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="pc" expression="execution(* com.quotation..*Service.*(..))"/>
+        <aop:advisor pointcut-ref="pc" advice-ref="txAdvice"/>
+    </aop:config>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>i18n/label</value>
+                <value>i18n/message</value>
+                <value>i18n/ValidationMessages</value>
+            </list>
+        </property>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+    </bean>
+
+</beans>
